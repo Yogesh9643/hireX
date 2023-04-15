@@ -6,6 +6,7 @@ import com.example.Hirex.entity.User;
 import com.example.Hirex.repository.UserRepository;
 import com.example.Hirex.utlil.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.Hirex.api.AuthService;
 @Service
@@ -14,13 +15,17 @@ public class AuthServiceImpl implements AuthService {
     private UserRepository userRepository;
     @Autowired
     private JwtUtils jwtUtils;
+
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Override
     public String  loginUser(LoginRequest request) {
          User user = userRepository.findByEmail(request.getEmail());
          if(user==null){
              return  null;
          }
-         if(!user.getPassword().equals(request.getPassword())){
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        System.out.println("pass "+request.getPassword()+" "+encodedPassword+passwordEncoder.matches(request.getPassword(),encodedPassword));
+         if(!passwordEncoder.matches(request.getPassword(),encodedPassword)){
              return null;
          }
          return jwtUtils.generateToken(request.getEmail()+" "+request.getPassword());
@@ -29,10 +34,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String signUpUser(SignUpRequest request) {
         User user = userRepository.findByEmail(request.getEmail());
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        System.out.println("pass "+request.getPassword()+" "+encodedPassword);
         if (user==null){
             user= new User();
             user.setEmail(request.getEmail());
-            user.setPassword(request.getPassword());
+            user.setPassword(encodedPassword);
             userRepository.save(user);
             return jwtUtils.generateToken(user.getEmail()+" "+user.getPassword());
         }
