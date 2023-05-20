@@ -44,8 +44,6 @@ public class RecruiterServiceImpl {
         Recruiter recruiter =  recruiterRepository.findByEmail(details[0]);
         RecruiterResponse response = new RecruiterResponse();
         response.setCompany(recruiter.getCompany());
-        response.setEmail(recruiter.getEmail());
-        response.setName(recruiter.getName());
         if(recruiter==null){
             throw  new ApiError(HttpStatus.BAD_REQUEST,"Invalid token");
         }
