@@ -25,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
          }
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         System.out.println("pass "+request.getPassword()+" "+encodedPassword+passwordEncoder.matches(request.getPassword(),encodedPassword));
-         if(!passwordEncoder.matches(request.getPassword(),encodedPassword)){
+         if(!passwordEncoder.matches(request.getPassword(),user.getPassword())){
              return null;
          }
          return jwtUtils.generateToken(request.getEmail()+" "+request.getPassword());

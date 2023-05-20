@@ -8,5 +8,6 @@ public interface AuthService {
 
     public  String  signUpUser(SignUpRequest user);
 
-    public String getUser(String token);
+    public
+    String getUser(String token);
 }
